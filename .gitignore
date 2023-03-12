@@ -1,0 +1,4 @@
+.vs/
+*.user
+ControlPanelItem/bin/
+ControlPanelItem/obj/
