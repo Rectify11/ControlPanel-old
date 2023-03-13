@@ -62,6 +62,19 @@ namespace Rectify11.SharpShell
         }
 
         /// <summary>
+        /// Gets the desktop idlist.
+        /// </summary>
+        /// <returns>The desktop idlist.</returns>
+        public static IdList GetControlPanel()
+        {
+            IntPtr pidl;
+            Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_AccountPictures, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
+                out pidl);
+            var idlist = IdList.Create(Decode(pidl));
+            Shell32.ILFree(pidl);
+            return idlist;
+        }
+        /// <summary>
         /// Converts a Win32 PIDL to a <see cref="PidlManager"/> <see cref="IdList"/>.
         /// The PIDL is not freed by the PIDL manager, if it has been allocated by the
         /// shell it is the caller's responsibility to manage it.

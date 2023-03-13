@@ -9,7 +9,7 @@ namespace Rectify11
 {
     public static class Logger
     {
-        public static string filePath = @"C:\Users\Misha\shellog.txt";
+        public static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\shellog.txt";
         public static void Log(string message)
         {
             Console.WriteLine(message);

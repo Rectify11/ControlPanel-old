@@ -19,7 +19,7 @@ namespace Rectify11.COM
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         int SetCurrentViewMode(uint ViewMode);
 
-        int GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+        unsafe int GetFolder(ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void Item(int iItemIndex, out IntPtr ppidl);

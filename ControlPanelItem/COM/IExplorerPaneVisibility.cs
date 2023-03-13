@@ -22,8 +22,6 @@ namespace Rectify11.COM
      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IExplorerPaneVisibility
     {
-        [PreserveSig]
-        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         public int GetPaneState(ref Guid explorerPane, out ExplorerPaneState peps);
     };
 

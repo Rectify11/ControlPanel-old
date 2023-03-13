@@ -15,6 +15,7 @@ namespace Rectify11.COM
     [Guid("000214E3-0000-0000-C000-000000000046")]
     public interface IShellView : IOleWindow
     {
+        #region IOleWindow
         /// <summary>
         /// Retrieves a handle to one of the windows participating in in-place activation (frame, document, parent, or in-place object window).
         /// </summary>
@@ -30,7 +31,7 @@ namespace Rectify11.COM
         /// <returns>This method returns S_OK if the help mode was entered or exited successfully, depending on the value passed in fEnterMode.</returns>
         [PreserveSig]
         new int ContextSensitiveHelp(bool fEnterMode);
-
+        #endregion
         /// <summary>
         /// Translates keyboard shortcut (accelerator) key strokes when a namespace extension's view has the focus.
         /// </summary>
@@ -38,14 +39,12 @@ namespace Rectify11.COM
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise. If the view returns S_OK, it indicates that the message was translated and should not be translated or dispatched by Windows Explorer. </returns>
         [PreserveSig]
         int TranslateAcceleratorA(MSG lpmsg);
-
         /// <summary>
         /// Enables or disables modeless dialog boxes. This method is not currently implemented.
         /// </summary>
         /// <param name="fEnable">Nonzero to enable modeless dialog box windows or zero to disable them.</param>
         [PreserveSig]
         int EnableModeless(bool fEnable);
-
         /// <summary>
         /// Called when the activation state of the view window is changed by an event that is not caused by the Shell view itself. For example, if the TAB key is pressed when the tree has the focus, the view should be given the focus.
         /// </summary>
@@ -53,14 +52,12 @@ namespace Rectify11.COM
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
         int UIActivate(SVUIA_STATUS uState);
-
         /// <summary>
         /// Refreshes the view's contents in response to user input.
         /// </summary>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
         int Refresh();
-
         /// <summary>
         /// Creates a view window. This can be either the right pane of Windows Explorer or the client window of a folder window..
         /// </summary>
@@ -73,7 +70,6 @@ namespace Rectify11.COM
         [PreserveSig]
         int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious,
              [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In] ref RECT prcView, [In, Out] ref IntPtr phWnd);
-
         /// <summary>
         /// Destroys the view window.
         /// </summary>
@@ -87,7 +83,7 @@ namespace Rectify11.COM
         /// <param name="pfs">The address of a FOLDERSETTINGS structure to receive the settings.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int GetCurrentInfo(ref FOLDERSETTINGS pfs);
+        int GetCurrentInfo(out FOLDERSETTINGS pfs);
 
         /// <summary>
         /// Allows the view to add pages to the Options property sheet from the View menu.

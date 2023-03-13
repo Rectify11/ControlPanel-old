@@ -10,7 +10,58 @@ namespace Rectify11
 {
     public class Program
     {
-        public static void Main()
+        public static void Main(string[] cmd)
+        {
+            try
+            {
+
+                Console.WriteLine("Rectify11 control panel extension");
+                if(cmd.Length > 0)
+                {
+                    if (cmd[0].ToLower() == "register")
+                    {
+                        Console.WriteLine("Registering...");
+                        DoRegister();
+                    }
+                    else if (cmd[0].ToLower() == "unregister")
+                    {
+                      
+                    }
+                    else
+                    {
+                        Console.WriteLine("Usage: rectify11 register / unregister");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Usage: rectify11 register / unregister");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            Console.WriteLine("press the any key to continue...");
+            Console.ReadKey();
+        }
+
+        [DllExport]
+        public static int DllRegisterServer()
+        {
+            try
+            {
+                DoRegister();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return 10;
+            }
+        }
+
+
+        public static void DoRegister()
         {
             var type = typeof(ThemesPage);
             var assemblyVersion = type.Assembly.GetName().Version.ToString();
@@ -18,8 +69,7 @@ namespace Rectify11
             var className = type.FullName;
             var runtimeVersion = type.Assembly.ImageRuntimeVersion;
             var codeBaseValue = type.Assembly.CodeBase;
-            Console.WriteLine("Rectify11 control panel extension version " + assemblyVersion);
-            Console.WriteLine("Registering...");
+            var guid = typeof(ThemesPage).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
 
             //What we need to create:
             //HKEY_CLASSES_ROOT
@@ -34,7 +84,6 @@ namespace Rectify11
             using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
             {
                 //create the key
-                var guid = typeof(ThemesPage).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
                 using (RegistryKey root = clsid.CreateSubKey("{" + guid.ToString() + "}", true))
                 {
                     root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
@@ -59,6 +108,10 @@ namespace Rectify11
                             versionKey.SetValue("CodeBase", codeBaseValue);
                         }
                     }
+                    using (RegistryKey icon = root.CreateSubKey("DefaultIcon", true))
+                    {
+                        icon.SetValue(null, codeBaseValue.Replace("file://", "").Replace("/", "\\")); //TODO: use .net and not .net framework
+                    }
                 }
 
                 using (RegistryKey progid = Registry.ClassesRoot.CreateSubKey(className, true))
@@ -75,7 +128,6 @@ namespace Rectify11
             using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\", true))
             {
                 //create the key
-                var guid = typeof(ThemesPage).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
                 using (RegistryKey root = pcNamespace.CreateSubKey("{" + guid.ToString() + "}", true))
                 {
                     root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
@@ -85,4 +137,5 @@ namespace Rectify11
     }
 }
 
+//hack so that we can build with latest c# version
 namespace System.Net.Http { }

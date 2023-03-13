@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Rectify11": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
