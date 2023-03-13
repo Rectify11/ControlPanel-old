@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// Flags specifying the folder to be browsed. It can be zero or one or more of the following values.

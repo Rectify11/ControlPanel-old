@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.SharpShell
+namespace Rectify11.SharpShell
 {
     /// <summary>
     /// A ShellId is a representation of a shell item that makes up an id list.

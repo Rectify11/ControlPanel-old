@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// Defines information used by AssocCreateForClasses to retrieve an IQueryAssociations interface for a given file association.

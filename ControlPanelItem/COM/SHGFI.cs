@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// The flags that specify the file information to retrieve.

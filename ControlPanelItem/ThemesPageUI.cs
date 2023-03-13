@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ControlPanelItem
+namespace Rectify11
 {
-    public partial class Page1UI : ShellNamespacePage
+    public partial class ThemesPageUI : ShellNamespacePage
     {
-        public Page1UI()
+        public ThemesPageUI()
         {
             InitializeComponent();
+            comboBox1.SelectedIndex = 0;
         }
     }
 }

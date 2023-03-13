@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     [ComImport,
         Guid("B63EA76D-1F85-456F-A19C-48159EFA858B"),

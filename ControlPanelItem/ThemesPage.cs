@@ -1,5 +1,5 @@
-﻿using ControlPanelItem.COM;
-using ControlPanelItem.SharpShell;
+﻿using Rectify11.COM;
+using Rectify11.SharpShell;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,42 +13,45 @@ using System.Drawing;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
-namespace ControlPanelItem
+namespace Rectify11
 {
     [ComVisible(true)]
     [Guid("0a852434-9b22-36d7-9985-478ccf000690")]
 
-    public class Page1 : IPersistFolder2,
+    public class ThemesPage : IPersistFolder2,
         IPersistIDList,
         IShellFolder2,
-        IShellFolder, 
+        IShellFolder,
         IShellView,
-        //IShellView2,
+       // IShellView2, //This crashes explorer in CreateViewWindow2 :(
         //We need to implement these 3 interfaces so we can hide the ribbon, command bar, tree view, etc
         COM.IServiceProvider,
         IExplorerPaneVisibility,
-        IFolderView, IFolderView2, ICustomQueryInterface, IPropertyBag
+        IFolderView,
+        IFolderView2,
+        ICustomQueryInterface, IPropertyBag
     {
         /// <summary>
         /// The absolute ID list of the folder. This is provided by IPersistFolder.
         /// </summary>
         private IdList idListAbsolute;
         private IShellBrowser shellBrowser;
-        private ShellNamespacePage customView = new Page1UI();
+        private ShellNamespacePage customView = new ThemesPageUI();
 
-        public Page1()
+        public ThemesPage()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("Unhandled exception in rectify11 control panel: " + e.ExceptionObject.ToString());
+            Logger.Log("Unhandled exception in rectify11 control panel: " + e.ExceptionObject.ToString());
         }
 
         #region IPersistFolder2 implementation
         public int GetClassID(out Guid pClassID)
         {
+            Logger.Log("GetClassID");
             //  Set the class ID to the server id.
             pClassID = new Guid("0a852434-9b22-36d7-9985-478ccf000690");//namespaceExtension.ServerClsid;
             return WinError.S_OK;
@@ -56,6 +59,7 @@ namespace ControlPanelItem
 
         public int Initialize(IntPtr pidl)
         {
+            Logger.Log("Initialize");
             //  Store the folder absolute pidl.
             idListAbsolute = PidlManager.PidlToIdlist(pidl);
             return WinError.S_OK;
@@ -63,6 +67,7 @@ namespace ControlPanelItem
 
         public int GetCurFolder(out IntPtr ppidl)
         {
+            Logger.Log("GetCurFolder");
             //  Return null if we're not initialised.
             if (idListAbsolute == null)
             {
@@ -90,7 +95,7 @@ namespace ControlPanelItem
         #region IShellFolder2 implementation
         public int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl, ref SFGAO pdwAttributes)
         {
-            MessageBox.Show("ParseDisplayName does not have an implemenation");
+            Logger.Log("ParseDisplayName does not have an implemenation");
             throw new NotImplementedException();
         }
 
@@ -98,24 +103,25 @@ namespace ControlPanelItem
         {
             //We don't have any sub-objects for now
             ppenumIDList = null;
+            Logger.Log("EnumObjects");
             return WinError.S_OK;
         }
 
         public int BindToObject(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv)
         {
-            MessageBox.Show("BindToObject does not have an implemenation");
+            Logger.Log("BindToObject does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int BindToStorage(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv)
         {
-            MessageBox.Show("BindToStorage does not have an implemenation");
+            Logger.Log("BindToStorage does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
-            MessageBox.Show("CompareIDs does not have an implemenation");
+            Logger.Log("CompareIDs does not have an implemenation");
             throw new NotImplementedException();
         }
 
@@ -124,7 +130,7 @@ namespace ControlPanelItem
             //  Before the contents of the folder are displayed, the shell asks for an IShellView.
             //  This function is also called to get other shell interfaces for interacting with the
             //  folder itself.
-
+            Logger.Log("CreateViewObject");
             if (riid == typeof(IShellView).GUID)
             {
                 //  Now create the actual shell view.
@@ -151,7 +157,7 @@ namespace ControlPanelItem
             //else if (riid == typeof(Interop.IFolderView).GUID)
             //{
             //    ppv = Marshal.GetComInterfaceForObject(this, typeof(IFolderView));
-            //    MessageBox.Show("Created the ifolderview!");
+            //    Logger.Log("Created the ifolderview!");
             //    return WinError.S_OK;
             //}
             //else if (riid == typeof(IContextMenu).GUID)
@@ -185,6 +191,7 @@ namespace ControlPanelItem
             else
             {
                 // SharpNamespaceExtension.TheLog("CreateViewObject: " + riid);
+                Logger.Log("CreateViewObject unknown: " + riid);
                 //  We've been asked for a com inteface we cannot handle.
                 ppv = IntPtr.Zero;
                 //  Importantly in this case, we MUST return E_NOINTERFACE.
@@ -194,67 +201,67 @@ namespace ControlPanelItem
 
         public int GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
-            MessageBox.Show("GetAttributesOf does not have an implemenation");
+            Logger.Log("GetAttributesOf does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, [In] ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
-            MessageBox.Show("GetUIObjectOf does not have an implemenation");
+            Logger.Log("GetUIObjectOf does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
-            MessageBox.Show("GetDisplayNameOf does not have an implemenation");
+            Logger.Log("GetDisplayNameOf does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
-            MessageBox.Show("SetNameOf does not have an implemenation");
+            Logger.Log("SetNameOf does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDefaultSearchGUID(out Guid pguid)
         {
-            MessageBox.Show("GetDefaultSearchGUID does not have an implemenation");
+            Logger.Log("GetDefaultSearchGUID does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int EnumSearches(out IEnumExtraSearch ppenum)
         {
-            MessageBox.Show("EnumSearches does not have an implemenation");
+            Logger.Log("EnumSearches does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDefaultColumn(uint dwRes, out uint pSort, out uint pDisplay)
         {
-            MessageBox.Show("GetDefaultColumn does not have an implemenation");
+            Logger.Log("GetDefaultColumn does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
         {
-            MessageBox.Show("GetDefaultColumnState does not have an implemenation");
+            Logger.Log("GetDefaultColumnState does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDetailsEx(IntPtr pidl, PROPERTYKEY pscid, out object pv)
         {
-            MessageBox.Show("GetDetailsEx does not have an implemenation");
+            Logger.Log("GetDetailsEx does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetDetailsOf(IntPtr pidl, uint iColumn, out SHELLDETAILS psd)
         {
-            MessageBox.Show("GetDetailsOf does not have an implemenation");
+            Logger.Log("GetDetailsOf does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int MapColumnToSCID(uint iColumn, out PROPERTYKEY pscid)
         {
-            MessageBox.Show("MapColumnToSCID does not have an implemenation");
+            Logger.Log("MapColumnToSCID does not have an implemenation");
             throw new NotImplementedException();
         }
 
@@ -264,31 +271,34 @@ namespace ControlPanelItem
         public int GetWindow(out IntPtr phwnd)
         {
             phwnd = customView.Handle;
+            Logger.Log("GetWindow");
             //  TODO
             return WinError.S_OK;
         }
 
         public int ContextSensitiveHelp(bool fEnterMode)
         {
-            MessageBox.Show("ContextSensitiveHelp does not have an implemenation");
+            Logger.Log("ContextSensitiveHelp does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int TranslateAcceleratorA(MSG lpmsg)
         {
             //  TODO
+            Logger.Log("TranslateAcceleratorA");
             return WinError.S_OK;
         }
 
         public int EnableModeless(bool fEnable)
         {
-            MessageBox.Show("EnableModeless does not have an implemenation");
+            Logger.Log("EnableModeless does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int UIActivate(SVUIA_STATUS uState)
         {
             //  TODO
+            Logger.Log("UIActivate");
             shellBrowser.GetWindow(out IntPtr window);
             User32.SendMessage(window, 0x001A, 0, Marshal.StringToHGlobalUni("ShellState"));
             return WinError.S_OK;
@@ -296,12 +306,13 @@ namespace ControlPanelItem
 
         public int Refresh()
         {
-            MessageBox.Show("Refresh does not have an implemenation");
+            Logger.Log("Refresh does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious, [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In] ref RECT prcView, [In, Out] ref IntPtr phWnd)
         {
+            Logger.Log("CreateViewWindow");
             //  Store the shell browser.
             shellBrowser = psb;
             customView.Browser = psb;
@@ -322,7 +333,6 @@ namespace ControlPanelItem
             if (hr != 0)
             {
                 Logger.Log("IUnknown_SetSite failed with " + new Win32Exception(hr).Message);
-                MessageBox.Show("setsite failed: " + new Win32Exception(hr).Message);
             }
 
             //  TODO: finish this function off.
@@ -331,6 +341,7 @@ namespace ControlPanelItem
 
         public int DestroyViewWindow()
         {
+            Logger.Log("DestroyViewWindow");
             //  Hide the view window, remove it from the parent.
             customView.Visible = false;
             User32.SetParent(customView.Handle, IntPtr.Zero);
@@ -351,25 +362,26 @@ namespace ControlPanelItem
 
         public int AddPropertySheetPages(long dwReserved, ref IntPtr lpfn, IntPtr lparam)
         {
-            MessageBox.Show("AddPropertySheetPages does not have an implemenation");
+            Logger.Log("AddPropertySheetPages does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int SaveViewState()
         {
             //save the settings here
-
+            Logger.Log("SaveViewState");
             return WinError.S_OK;
         }
 
         public int SelectItem(IntPtr pidlItem, _SVSIF uFlags)
         {
-            MessageBox.Show("SelectItem does not have an implemenation");
+            Logger.Log("SelectItem does not have an implemenation");
             throw new NotImplementedException();
         }
 
         public int GetItemObject(_SVGIO uItem, ref Guid riid, ref IntPtr ppv)
         {
+            Logger.Log("GetItemObject");
             // Returning S_OK will cause Explorer to crash when navigating away from namespace View
             return WinError.E_NOTIMPL;
         }
@@ -377,7 +389,7 @@ namespace ControlPanelItem
         #region IShellView2 implementation
         public int CreateViewWindow2(IntPtr ptr)
         {
-            
+
 
             Logger.Log("CreateViewWindow2 called!");
             var lpParams = Marshal.PtrToStructure<SV2CVW2_PARAMS>(ptr);
@@ -405,7 +417,7 @@ namespace ControlPanelItem
             if (hr != 0)
             {
                 Logger.Log("IUnknown_SetSite failed with " + new Win32Exception(hr).Message);
-                MessageBox.Show("setsite failed: " + new Win32Exception(hr).Message);
+                Logger.Log("setsite failed: " + new Win32Exception(hr).Message);
             }
             Logger.Log("CreateViewWindow2 end");
             //  TODO: finish this function off.
@@ -414,19 +426,19 @@ namespace ControlPanelItem
 
         public int GetView(in Guid pvid, in ulong uView)
         {
-            MessageBox.Show("IShellView2::GetView not implemented");
+            Logger.Log("IShellView2::GetView not implemented");
             throw new NotImplementedException();
         }
 
         public int HandleRename(IntPtr pidlNew)
         {
-            MessageBox.Show("IShellView2::HandleRename not implemented");
+            Logger.Log("IShellView2::HandleRename not implemented");
             throw new NotImplementedException();
         }
 
         public void SelectAndPositionItem(IntPtr pidlItem, SVSIF flags, in POINT point)
         {
-            MessageBox.Show("IShellView2::SelectAndPositionItem not implemented");
+            Logger.Log("IShellView2::SelectAndPositionItem not implemented");
             throw new NotImplementedException();
         }
         #endregion
@@ -434,114 +446,108 @@ namespace ControlPanelItem
         uint viewmode = 0;
         public void GetCurrentViewMode([Out] out uint pViewMode)
         {
+            Logger.Log("GetCurrentViewMode");
             pViewMode = viewmode;
         }
 
         public int SetCurrentViewMode(uint ViewMode)
         {
+            Logger.Log("SetCurrentViewMode");
             viewmode = ViewMode;
             return WinError.S_OK;
         }
 
-        public int GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv)
+        public unsafe int GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv)
         {
-            try
+            Logger.Log("GetFolder() with " + riid);
+            if (riid == typeof(IExplorerPaneVisibility).GUID)
             {
-                Logger.Log("GetFolder() with " + riid);
-                if (riid == typeof(IExplorerPaneVisibility).GUID)
-                {
-                    Logger.Log("GetFolder() with IExplorerPaneVisibility");
-                    ppv = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility));
-                    return WinError.S_OK;
-                }
-                else if (riid == typeof(IShellFolder).GUID)
-                {
-                    ppv = Marshal.GetComInterfaceForObject(this, typeof(IShellFolder));
-                    return WinError.S_OK;
-                }
-                else
-                {
-                    MessageBox.Show("GetFolder() no such interface: " + riid.ToString());
-                    Logger.Log("GetFolder() no such interface: " + riid.ToString());
-                    ppv = IntPtr.Zero;
-
-                    return WinError.E_NOINTERFACE;
-                }
+                Logger.Log("GetFolder() with IExplorerPaneVisibility");
+                ppv = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility));
+                return WinError.S_OK;
             }
-            catch (Exception ex)
+            else if (riid == typeof(IShellFolder).GUID)
             {
-                MessageBox.Show("A fatal error has occured: " + ex.ToString());
-                ppv = IntPtr.Zero;
+                ppv = Marshal.GetComInterfaceForObject(this, typeof(IShellFolder));
+                return WinError.S_OK;
+            }
+            else
+            {
+                Logger.Log("GetFolder() no such interface: " + riid.ToString());
+                IntPtr nullobj = IntPtr.Zero;
+                Logger.Log("c");
+                ppv = nullobj;
+                Logger.Log("b");
                 return WinError.E_NOINTERFACE;
             }
         }
 
         public void Item(int iItemIndex, out IntPtr ppidl)
         {
-            MessageBox.Show("Item not implemented");
+            Logger.Log("Item not implemented");
             throw new NotImplementedException();
         }
 
         public void ItemCount(uint uFlags, out int pcItems)
         {
-            MessageBox.Show("ItemCount not implemented");
+            Logger.Log("ItemCount not implemented");
             throw new NotImplementedException();
         }
 
         public void Items(uint uFlags, ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object ppv)
         {
-            MessageBox.Show("Items not implemented");
+            Logger.Log("Items not implemented");
             throw new NotImplementedException();
         }
 
         public void GetSelectionMarkedItem(out int piItem)
         {
-            MessageBox.Show("GetSelectionMarkedItem not implemented");
+            Logger.Log("GetSelectionMarkedItem not implemented");
             throw new NotImplementedException();
         }
 
         public void GetFocusedItem(out int piItem)
         {
-            MessageBox.Show("GetFocusedItem not implemented");
+            Logger.Log("GetFocusedItem not implemented");
             throw new NotImplementedException();
         }
 
         public unsafe int GetItemPosition(IntPtr pidl, [MarshalAs(UnmanagedType.LPStruct)] out POINT ppt)
         {
-            MessageBox.Show("GetItemPosition: executing");
+            Logger.Log("GetItemPosition: executing");
             var p = new POINT() { X = 0, Y = 0 };
             ppt = p;
-            MessageBox.Show("GetItemPosition: ok");
+            Logger.Log("GetItemPosition: ok");
             return WinError.S_OK;
         }
 
         public void GetSpacing([Out] out POINT ppt)
         {
-            MessageBox.Show("GetSpacing not implemented");
+            Logger.Log("GetSpacing not implemented");
             throw new NotImplementedException();
         }
 
         public void GetDefaultSpacing(out POINT ppt)
         {
-            MessageBox.Show("GetDefaultSpacing not implemented");
+            Logger.Log("GetDefaultSpacing not implemented");
             throw new NotImplementedException();
         }
 
         public void GetAutoArrange()
         {
-            MessageBox.Show("GetAutoArrange not implemented");
+            Logger.Log("GetAutoArrange not implemented");
             throw new NotImplementedException();
         }
 
         public void SelectItem(int iItem, uint dwFlags)
         {
-            MessageBox.Show("SelectItem not implemented");
+            Logger.Log("SelectItem not implemented");
             throw new NotImplementedException();
         }
 
         public void SelectAndPositionItems(uint cidl, IntPtr apidl, ref POINT apt, uint dwFlags)
         {
-            MessageBox.Show("SelectAndPositionItems not implemented");
+            Logger.Log("SelectAndPositionItems not implemented");
             throw new NotImplementedException();
         }
         #endregion
@@ -549,162 +555,162 @@ namespace ControlPanelItem
 
         public void SetGroupBy(IntPtr key, bool fAscending)
         {
-            MessageBox.Show("SetGroupBy not implemented");
+            Logger.Log("SetGroupBy not implemented");
             throw new NotImplementedException();
         }
 
         public void GetGroupBy(ref IntPtr pkey, ref bool pfAscending)
         {
-            MessageBox.Show("GetGroupBy not implemented");
+            Logger.Log("GetGroupBy not implemented");
             throw new NotImplementedException();
         }
 
         public void SetViewProperty(IntPtr pidl, IntPtr propkey, object propvar)
         {
-            MessageBox.Show("SetViewProperty not implemented");
+            Logger.Log("SetViewProperty not implemented");
             throw new NotImplementedException();
         }
 
         public void GetViewProperty(IntPtr pidl, IntPtr propkey, out object ppropvar)
         {
-            MessageBox.Show("GetViewProperty not implemented");
+            Logger.Log("GetViewProperty not implemented");
             throw new NotImplementedException();
         }
 
         public void SetTileViewProperties(IntPtr pidl, [MarshalAs(UnmanagedType.LPWStr)] string pszPropList)
         {
-            MessageBox.Show("SetTileViewProperties not implemented");
+            Logger.Log("SetTileViewProperties not implemented");
             //throw new NotImplementedException();
         }
 
-        public void SetExtendedTileViewProperties(IntPtr pidl, in IntPtr pszPropList)
+        public void SetExtendedTileViewProperties(IntPtr pidl, [MarshalAs(UnmanagedType.LPWStr)] in object pszPropList)
         {
             //we can't pass pszPropList as a string or else crash!
             try
             {
-                MessageBox.Show("SetExtendedTileViewProperties not implemented");
-               // var pszPropList2 = Marshal.PtrToStringUni(pszPropList);
+                Logger.Log("SetExtendedTileViewProperties not implemented");
+                // var pszPropList2 = Marshal.PtrToStringUni(pszPropList);
 
-             //   Logger.Log("SetExtendedTileViewProperties called with " + pszPropList2);
-               // MessageBox.Show("SetExtendedTileViewProperties not implemented end");
+                //   Logger.Log("SetExtendedTileViewProperties called with " + pszPropList2);
+                // Logger.Log("SetExtendedTileViewProperties not implemented end");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Logger.Log(ex.ToString());
             }
         }
 
         public void SetText(int iType, [MarshalAs(UnmanagedType.LPWStr)] string pwszText)
         {
-            MessageBox.Show("SetText not implemented");
+            Logger.Log("SetText not implemented");
             throw new NotImplementedException();
         }
 
         public void SetCurrentFolderFlags(uint dwMask, uint dwFlags)
         {
-            MessageBox.Show("SetCurrentFolderFlags not implemented");
+            Logger.Log("SetCurrentFolderFlags not implemented");
             throw new NotImplementedException();
         }
 
         public void GetCurrentFolderFlags(out uint pdwFlags)
         {
-            MessageBox.Show("GetCurrentFolderFlags not implemented");
+            Logger.Log("GetCurrentFolderFlags not implemented");
             throw new NotImplementedException();
         }
 
         public void GetSortColumnCount(out int pcColumns)
         {
-            MessageBox.Show("GetSortColumnCount not implemented");
+            Logger.Log("GetSortColumnCount not implemented");
             throw new NotImplementedException();
         }
 
         public void SetSortColumns(IntPtr rgSortColumns, int cColumns)
         {
-            MessageBox.Show("SetSortColumns not implemented");
+            Logger.Log("SetSortColumns not implemented");
             throw new NotImplementedException();
         }
 
         public void GetSortColumns(out IntPtr rgSortColumns, int cColumns)
         {
-            MessageBox.Show("GetSortColumns not implemented");
+            Logger.Log("GetSortColumns not implemented");
             throw new NotImplementedException();
         }
 
         public void GetItem(int iItem, ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv)
         {
-            MessageBox.Show("GetItem not implemented");
+            Logger.Log("GetItem not implemented");
             throw new NotImplementedException();
         }
 
         public void GetVisibleItem(int iStart, bool fPrevious, out int piItem)
         {
-            MessageBox.Show("GetVisibleItem not implemented");
+            Logger.Log("GetVisibleItem not implemented");
             throw new NotImplementedException();
         }
 
         public void GetSelectedItem(int iStart, out int piItem)
         {
-            MessageBox.Show("GetSelectedItem not implemented");
+            Logger.Log("GetSelectedItem not implemented");
             throw new NotImplementedException();
         }
 
         void IFolderView2.GetSelection(bool fNoneImpliesFolder, out IShellItemArray ppsia)
         {
-            MessageBox.Show("GetSelection not implemented");
+            Logger.Log("GetSelection not implemented");
             throw new NotImplementedException();
         }
 
         public void GetSelectionState(IntPtr pidl, out uint pdwFlags)
         {
-            MessageBox.Show("GetSelectionState not implemented");
+            Logger.Log("GetSelectionState not implemented");
             throw new NotImplementedException();
         }
 
         public void InvokeVerbOnSelection([In, MarshalAs(UnmanagedType.LPWStr)] string pszVerb)
         {
-            MessageBox.Show("InvokeVerbOnSelection not implemented");
+            Logger.Log("InvokeVerbOnSelection not implemented");
             throw new NotImplementedException();
         }
 
         public int SetViewModeAndIconSize(int uViewMode, int iImageSize)
         {
-            MessageBox.Show("SetViewModeAndIconSize not implemented");
+            Logger.Log("SetViewModeAndIconSize not implemented");
             throw new NotImplementedException();
         }
 
         public int GetViewModeAndIconSize(out int puViewMode, out int piImageSize)
         {
-            MessageBox.Show("GetViewModeAndIconSize not implemented");
+            Logger.Log("GetViewModeAndIconSize not implemented");
             throw new NotImplementedException();
         }
 
         public void SetGroupSubsetCount(uint cVisibleRows)
         {
-            MessageBox.Show("SetGroupSubsetCount not implemented");
+            Logger.Log("SetGroupSubsetCount not implemented");
             throw new NotImplementedException();
         }
 
         public void GetGroupSubsetCount(out uint pcVisibleRows)
         {
-            MessageBox.Show("GetGroupSubsetCount not implemented");
+            Logger.Log("GetGroupSubsetCount not implemented");
             throw new NotImplementedException();
         }
 
         public void SetRedraw(bool fRedrawOn)
         {
-            MessageBox.Show("SetRedraw not implemented");
+            Logger.Log("SetRedraw not implemented");
             throw new NotImplementedException();
         }
 
         public void IsMoveInSameFolder()
         {
-            MessageBox.Show("IsMoveInSameFolder not implemented");
+            Logger.Log("IsMoveInSameFolder not implemented");
             throw new NotImplementedException();
         }
 
         public void DoRename()
         {
-            MessageBox.Show("DoRename not implemented");
+            Logger.Log("DoRename not implemented");
             throw new NotImplementedException();
         }
         #endregion
@@ -714,21 +720,23 @@ namespace ControlPanelItem
          [In, MarshalAs(UnmanagedType.IUnknown)] object punk,
          [In, MarshalAs(UnmanagedType.IUnknown)] object punkSite);
 
-        public int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppv)
+        public int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject)
         {
+            Logger.Log("QueryService() called with " + guidService);
             if (guidService == typeof(IExplorerPaneVisibility).GUID)
             {
-                ppv = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility));
-                MessageBox.Show("IExplorerPaneVisibility requested!");
+                ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility));
+                Logger.Log("IExplorerPaneVisibility requested!");
                 return WinError.S_OK;
             }
             else if (guidService == typeof(IFolderView).GUID)
             {
-                ppv = Marshal.GetComInterfaceForObject(this, typeof(IFolderView));
+                ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IFolderView));
                 return WinError.S_OK;
             }
-            MessageBox.Show("The service: " + guidService + " does not have an implemenation");
-            ppv = IntPtr.Zero;
+            Logger.Log("The service: " + guidService + " does not have an implemenation");
+            IntPtr nullObj = IntPtr.Zero;
+            ppvObject = nullObj;
             return WinError.E_NOINTERFACE;
         }
         #endregion
@@ -737,7 +745,6 @@ namespace ControlPanelItem
         public int GetPaneState(ref Guid explorerPane, out ExplorerPaneState peps)
         {
             Logger.Log("GetPaneState() called with " + explorerPane);
-            //MessageBox.Show("GetPaneState called!");
             peps = ExplorerPaneState.Force | ExplorerPaneState.DefaultOff;
             return WinError.S_OK;
         }
@@ -745,6 +752,11 @@ namespace ControlPanelItem
         public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
         {
             Logger.Log("QueryInterface: " + iid.ToString());
+            if(iid == new Guid("e07010ec-bc17-44c0-97b0-46c7c95b9edc"))
+            {
+                ppv = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility), CustomQueryInterfaceMode.Ignore);
+                return CustomQueryInterfaceResult.Handled;
+            }
             ppv = IntPtr.Zero;
             return CustomQueryInterfaceResult.NotHandled;
         }

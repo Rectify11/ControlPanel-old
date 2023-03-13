@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     [ComImport,
        Guid("cde725b0-ccc9-4519-917e-325d72fab4ce"),
@@ -19,7 +19,7 @@ namespace ControlPanelItem.COM
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         int SetCurrentViewMode(uint ViewMode);
 
-        int GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)]  out object ppv);
+        int GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void Item(int iItemIndex, out IntPtr ppidl);
@@ -78,7 +78,7 @@ namespace ControlPanelItem.COM
         void SetTileViewProperties(IntPtr pidl, [MarshalAs(UnmanagedType.LPWStr)] string pszPropList);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void SetExtendedTileViewProperties(IntPtr pidl, in IntPtr pszPropList);
+        void SetExtendedTileViewProperties(IntPtr pidl, in object pszPropList);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SetText(int iType, [MarshalAs(UnmanagedType.LPWStr)] string pwszText);

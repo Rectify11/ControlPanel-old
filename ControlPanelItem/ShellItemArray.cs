@@ -1,9 +1,10 @@
-﻿using ControlPanelItem.COM;
+﻿using Rectify11.COM;
 using System.Runtime.InteropServices;
 
-namespace ControlPanelItem
+namespace Rectify11
 {
     [ComVisible(true)]
+    [Guid("A0360902-29E5-4AE1-851E-8EDAB9007D68")]
     public class ShellItemArray: IShellItemArray
     {
         public ShellItemArray()
@@ -12,43 +13,43 @@ namespace ControlPanelItem
 
         public int BindToHandler([In, MarshalAs(UnmanagedType.Interface)] IntPtr pbc, [In] ref Guid rbhid, [In] ref Guid riid, out IntPtr ppvOut)
         {
-            MessageBox.Show("BindToHandler() not implemented");
+            Logger.Log("BindToHandler() not implemented");
             throw new NotImplementedException();
         }
 
         public int GetPropertyStore([In] int Flags, [In] ref Guid riid, out IntPtr ppv)
         {
-            MessageBox.Show("GetPropertyStore() not implemented");
+            Logger.Log("GetPropertyStore() not implemented");
             throw new NotImplementedException();
         }
 
         public int GetPropertyDescriptionList([In] ref PROPERTYKEY keyType, [In] ref Guid riid, out IntPtr ppv)
         {
-            MessageBox.Show("GetPropertyDescriptionList() not implemented");
+            Logger.Log("GetPropertyDescriptionList() not implemented");
             throw new NotImplementedException();
         }
 
         int IShellItemArray.GetAttributes(ShellItemAttributeOptions dwAttribFlags, ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs)
         {
-            MessageBox.Show("IShellItemArray.GetAttributes() not implemented");
+            Logger.Log("IShellItemArray.GetAttributes() not implemented");
             throw new NotImplementedException();
         }
 
         public int GetCount(out uint pdwNumItems)
         {
-            MessageBox.Show("GetCount() not implemented");
+            Logger.Log("GetCount() not implemented");
             throw new NotImplementedException();
         }
 
         int IShellItemArray.GetItemAt(uint dwIndex, out IShellItem ppsi)
         {
-            MessageBox.Show("GetItemAt() not implemented");
+            Logger.Log("GetItemAt() not implemented");
             throw new NotImplementedException();
         }
 
         public int EnumItems([MarshalAs(UnmanagedType.Interface)] out IntPtr ppenumShellItems)
         {
-            MessageBox.Show("EnumItems() not implemented");
+            Logger.Log("EnumItems() not implemented");
             throw new NotImplementedException();
         }
     }

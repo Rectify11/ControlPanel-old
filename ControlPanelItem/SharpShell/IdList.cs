@@ -1,4 +1,4 @@
-﻿using ControlPanelItem.COM;
+﻿using Rectify11.COM;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.SharpShell
+namespace Rectify11.SharpShell
 {
     public sealed class IdList
     {

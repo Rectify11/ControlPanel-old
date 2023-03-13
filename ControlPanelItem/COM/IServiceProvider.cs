@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.
@@ -24,7 +24,7 @@ namespace ControlPanelItem.COM
         /// <param name="ppvObject">The address of the caller-allocated variable to receive the interface pointer of the service on successful return from this function. The caller becomes responsible for calling Release through this interface pointer when the service is no longer required.</param>
         /// <returns>Returns one of the following values.</returns>
         [PreserveSig]
-        int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppv);
+        int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject);
 
     };
 }

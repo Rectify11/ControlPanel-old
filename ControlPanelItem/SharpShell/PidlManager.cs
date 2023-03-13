@@ -1,4 +1,4 @@
-﻿using ControlPanelItem.COM;
+﻿using Rectify11.COM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.SharpShell
+namespace Rectify11.SharpShell
 {
     /// <summary>
     /// The PidlManager is a class that offers a set of functions for 

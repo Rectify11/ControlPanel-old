@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// Where to obtain association data and the form the data is stored in. One of the following values from the ASSOCCLASS enumeration.   

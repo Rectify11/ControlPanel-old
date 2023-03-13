@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControlPanelItem.COM
+namespace Rectify11.COM
 {
     /// <summary>
     /// Specifies the FMTID/PID identifier that programmatically identifies a property. Replaces <see cref="SharpShell.Interop.SHCOLUMNID"/>.
