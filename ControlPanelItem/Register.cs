@@ -31,33 +31,33 @@ namespace ControlPanelItem
             //      ShellFolder
 
             //Open classes key
-            RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true);
+            using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
+            {
+                //create the key
+                var guid = typeof(Page1).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
+                using (RegistryKey root = clsid.CreateSubKey("{" + guid.ToString() + "}", true))
+                {
+                    root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
+                    root.SetValue("Infotip", "Manage your themes and various Rectify11 settings", RegistryValueKind.String); //display name
 
-            //create the key
-            var guid = typeof(Page1).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
-
-            RegistryKey root = clsid.CreateSubKey("{" + guid.ToString() + "}", true);
-            root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
-            root.SetValue("Infotip", "Manage your themes and various Rectify11 settings", RegistryValueKind.String); //display name
-
-            RegistryKey inprocserver = clsid.CreateSubKey("InprocServer32", true);
-            inprocserver.SetValue(null, "mscoree.dll"); //TODO: use .net and not .net framework
-            inprocserver.SetValue("Assembly", assemblyFullName);
-            inprocserver.SetValue("Class", className);
-            inprocserver.SetValue("RuntimeVersion", runtimeVersion);
-            inprocserver.SetValue("ThreadingModel", "Both");
-            inprocserver.SetValue("CodeBase", codeBaseValue);
-
-            RegistryKey versionKey = inprocserver.CreateSubKey(assemblyVersion, true);
-            versionKey.SetValue("Assembly", assemblyFullName);
-            versionKey.SetValue("Class", className);
-            versionKey.SetValue("RuntimeVersion", runtimeVersion);
-            versionKey.SetValue("CodeBase", codeBaseValue);
-
-            versionKey.Close();
-            inprocserver.Close();
-            root.Close();
-            clsid.Close();
+                    using (RegistryKey inprocserver = root.CreateSubKey("InprocServer32", true))
+                    {
+                        inprocserver.SetValue(null, "mscoree.dll"); //TODO: use .net and not .net framework
+                        inprocserver.SetValue("Assembly", assemblyFullName);
+                        inprocserver.SetValue("Class", className);
+                        inprocserver.SetValue("RuntimeVersion", runtimeVersion);
+                        inprocserver.SetValue("ThreadingModel", "Both");
+                        inprocserver.SetValue("CodeBase", codeBaseValue);
+                        using (RegistryKey versionKey = inprocserver.CreateSubKey(assemblyVersion, true))
+                        {
+                            versionKey.SetValue("Assembly", assemblyFullName);
+                            versionKey.SetValue("Class", className);
+                            versionKey.SetValue("RuntimeVersion", runtimeVersion);
+                            versionKey.SetValue("CodeBase", codeBaseValue);
+                        }
+                    }
+                }
+            }
         }
 
     }
