@@ -281,10 +281,8 @@ namespace Rectify11
 
         public int GetCurrentInfo(out FOLDERSETTINGS pfs)
         {
-            Debugger.Break();
             Logger.Log("GetCurrentInfo called");
             pfs = new FOLDERSETTINGS { fFlags = 0, ViewMode = FOLDERVIEWMODE.FVM_AUTO };
-            Logger.Log("GetCurrentInfo ok");
             return WinError.S_OK;
         }
 
