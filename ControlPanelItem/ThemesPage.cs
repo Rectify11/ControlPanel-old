@@ -327,6 +327,12 @@ namespace Rectify11
                 ppv = Marshal.GetComInterfaceForObject(this, typeof(IExplorerPaneVisibility));
                 return WinError.S_OK;
             }
+            else if (riid == typeof(IShellFolder).GUID)
+            {
+                Logger.Log("GetFolder() with IShellFolder");
+                ppv = Marshal.GetComInterfaceForObject(this, typeof(IShellFolder));
+                return WinError.S_OK;
+            }
             else
             {
                 Logger.Log("GetFolder() no such interface: " + riid.ToString());
@@ -411,6 +417,12 @@ namespace Rectify11
                 Logger.Log("IExplorerPaneVisibility requested!");
                 return WinError.S_OK;
             }
+            else if (guidService == typeof(IFolderView).GUID)
+            {
+                ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IFolderView));
+                Logger.Log("IFolderView requested");
+                return WinError.S_OK;
+            }
             Logger.Log("The service: " + guidService + " does not have an implemenation");
             IntPtr nullObj = IntPtr.Zero;
             ppvObject = nullObj;
@@ -422,59 +434,10 @@ namespace Rectify11
         public int GetPaneState(ref Guid explorerPane, out ExplorerPaneState peps)
         {
             Logger.Log("GetPaneState() called with " + explorerPane);
-            peps = ExplorerPaneState.Force | ExplorerPaneState.DefaultOff;
+            peps = ExplorerPaneState.DefaultOff | ExplorerPaneState.Force;
+            Logger.Log("GetPaneState() exit");
             return WinError.S_OK;
         }
         #endregion
-
-        public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
-        {
-            if (iid == typeof(IShellFolder).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IShellFolder)this, typeof(IShellFolder), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IShellFolder2).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IShellFolder2)this, typeof(IShellFolder2), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IPersist).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IPersist)this, typeof(IPersist), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IPersistFolder).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IPersistFolder)this, typeof(IPersistFolder), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IPersistFolder2).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IPersistFolder2)this, typeof(IPersistFolder2), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IExplorerPaneVisibility).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IExplorerPaneVisibility)this, typeof(IExplorerPaneVisibility), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IShellView).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IShellView)this, typeof(IShellView), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else if (iid == typeof(IFolderView).GUID)
-            {
-                ppv = Marshal.GetComInterfaceForObject((IFolderView)this, typeof(IFolderView), CustomQueryInterfaceMode.Ignore);
-                return CustomQueryInterfaceResult.Handled;
-            }
-            else
-            {
-                Logger.Log("GetInterface: unhandled: " + iid.ToString());
-                ppv = IntPtr.Zero;
-                return CustomQueryInterfaceResult.NotHandled;
-            }
-        }
     }
 }
