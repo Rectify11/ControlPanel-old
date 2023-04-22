@@ -2,3 +2,5 @@
 *.user
 ControlPanelItem/bin/
 ControlPanelItem/obj/
+Register/bin/
+Register/obj/

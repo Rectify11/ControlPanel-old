@@ -17,7 +17,7 @@ using System.Diagnostics;
 namespace Rectify11
 {
     [ComVisible(true)]
-    [Guid("0a852434-9b22-36d7-9985-478ccf000690")]
+    [Guid(RegisterUtil.GUID)]
 
     public class ThemesPage : IShellFolder2, IPersistFolder2, IExplorerPaneVisibility, IShellView, COM.IServiceProvider, IFolderView
     {
@@ -28,6 +28,9 @@ namespace Rectify11
         private IShellBrowser? shellBrowser;
         private ShellNamespacePage customView = new ThemesPageUI();
 
+        public ThemesPage()
+        {
+        }
         #region IPersistFolder2 implementation
         public int GetClassID(out Guid pClassID)
         {

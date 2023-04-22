@@ -9,70 +9,50 @@ using System.Threading.Tasks;
 
 namespace Rectify11
 {
-    public class Program
+    public class RegisterUtil
     {
-        public static void Main(string[] cmd)
+        public const string GUID = "0a852434-9b22-36d7-9985-478ccf000690";
+        public const string RegistryGUID = "{" + GUID + "}";
+
+        public static void DoUnregister()
         {
-            try
+            using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
             {
 
-                Console.WriteLine("Rectify11 control panel extension");
-                if(cmd.Length > 0)
+                //delete the CLSID
+                try
                 {
-                    if (cmd[0].ToLower() == "register")
-                    {
-                        Console.WriteLine("Registering...");
-                        DoRegister();
-                    }
-                    else if (cmd[0].ToLower() == "unregister")
-                    {
-                      
-                    }
-                    else
-                    {
-                        Console.WriteLine("Usage: rectify11 register / unregister");
-                    }
+                    clsid.DeleteSubKeyTree(RegistryGUID, true);
                 }
-                else
+                catch
                 {
-                    Console.WriteLine("Usage: rectify11 register / unregister");
+
                 }
             }
-            catch(Exception ex)
+
+            using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ControlPanel\\NameSpace\\", true))
             {
-                Console.WriteLine(ex.ToString());
+                try { pcNamespace.DeleteSubKey(RegistryGUID); } catch { }
             }
-            DoRegister();
-            Console.WriteLine("press the any key to continue...");
-            Console.ReadKey();
+            using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\", true))
+            {
+                try { pcNamespace.DeleteSubKey(RegistryGUID); } catch { }
+            }
+
+            using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved\\", true))
+            {
+                try { pcNamespace.DeleteValue(RegistryGUID); } catch { }
+            }
+            DeleteShellExtCache();
+
+
         }
-
-        [DllExport]
-        public static int DllRegisterServer()
-        {
-            try
-            {
-                DoRegister();
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return 10;
-            }
-        }
-
-
         public static void DoRegister()
         {
+            DeleteShellExtCache();
             //shell:::{0a852434-9b22-36d7-9985-478ccf000690}
             var type = typeof(ThemesPage);
-            var assemblyVersion = type.Assembly.GetName().Version.ToString();
-            var assemblyFullName = type.Assembly.FullName;
             var className = type.FullName;
-            var runtimeVersion = type.Assembly.ImageRuntimeVersion;
-            var codeBaseValue = type.Assembly.CodeBase;
-            var guid = typeof(ThemesPage).GUID; //must be 0a852434-9b22-36d7-9985-478ccf000690
 
             //What we need to create:
             //HKEY_CLASSES_ROOT
@@ -83,80 +63,75 @@ namespace Rectify11
             //        1.0.0.0
             //      ShellFolder
 
+            //NOTE: If the ShellFolder key doesn't exit, the "This file does not have an app associated with it" error will appear.
+
             //Open classes key
             using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
             {
                 //create the key
-                using (RegistryKey root = clsid.CreateSubKey("{" + guid.ToString() + "}", true))
+                using (RegistryKey root = clsid.CreateSubKey(RegistryGUID, true))
                 {
                     root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
                     root.SetValue("Infotip", "Manage your themes and various Rectify11 settings", RegistryValueKind.String); //display name
+
                     root.SetValue("System.ControlPanel.Category", "5", RegistryValueKind.String);
                     root.SetValue("System.ControlPanel.EnableInSafeMode", 5, RegistryValueKind.DWord);
-                    root.SetValue("System.Software.TasksFileUrl", "C:\\tasks.xml", RegistryValueKind.String);
-                    //Rectify11.ThemesPage
+
                     using (RegistryKey progid = root.CreateSubKey("ProgId", true))
                     {
                         progid.SetValue(null, className);
                     }
                     using (RegistryKey inprocserver = root.CreateSubKey("InprocServer32", true))
                     {
-                        inprocserver.SetValue(null, "mscoree.dll"); //TODO: use .net and not .net framework
-                        inprocserver.SetValue("Assembly", assemblyFullName);
-                        inprocserver.SetValue("Class", className);
-                        inprocserver.SetValue("RuntimeVersion", runtimeVersion);
-                        inprocserver.SetValue("ThreadingModel", "Both");
-                        inprocserver.SetValue("CodeBase", codeBaseValue);
-                        using (RegistryKey versionKey = inprocserver.CreateSubKey(assemblyVersion, true))
-                        {
-                            versionKey.SetValue("Assembly", assemblyFullName);
-                            versionKey.SetValue("Class", className);
-                            versionKey.SetValue("RuntimeVersion", runtimeVersion);
-                            versionKey.SetValue("CodeBase", codeBaseValue);
-                        }
+                        inprocserver.SetValue(null, AppDomain.CurrentDomain.BaseDirectory + "Rectify11.comhost.dll"); //TODO: use .net and not .net framework
                     }
                     using (RegistryKey icon = root.CreateSubKey("DefaultIcon", true))
                     {
-                        icon.SetValue(null, Assembly.GetEntryAssembly().Location);
+                        icon.SetValue(null, AppDomain.CurrentDomain.BaseDirectory + "Rectify11.dll");
                     }
 
                     using (RegistryKey shellfolder = root.CreateSubKey("ShellFolder", true))
-                    {
+                    { 
                         shellfolder.SetValue("Attributes", (int)(AttributeFlags.IsFolder), RegistryValueKind.DWord);
                     }
                 }
             }
 
+            //Create the ProgID
             using (RegistryKey progid = Registry.ClassesRoot.CreateSubKey(className, true))
             {
                 progid.SetValue(null, className, RegistryValueKind.String); //display name
                 using (RegistryKey c = progid.CreateSubKey("CLSID", true))
                 {
-                    c.SetValue(null, guid, RegistryValueKind.String);
+                    c.SetValue(null, RegistryGUID, RegistryValueKind.String);
                 }
             }
 
-            //Open explorer key
-            using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\", true))
-            {
-                //create the key
-                using (RegistryKey root = pcNamespace.CreateSubKey("{" + guid.ToString() + "}", true))
-                {
-                    root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
-                }
-            }
+            //Add it to the control panel
             using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ControlPanel\\NameSpace\\", true))
             {
                 //create the key
-                using (RegistryKey root = pcNamespace.CreateSubKey("{" + guid.ToString() + "}", true))
+                using (RegistryKey root = pcNamespace.CreateSubKey(RegistryGUID, true))
                 {
                     root.SetValue(null, "Rectify11 Settings", RegistryValueKind.String); //display name
                 }
             }
 
+            //Approve the shell extension
             using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved\\", true))
             {
-                pcNamespace.SetValue("{" + guid.ToString() + "}", "Rectify11 Control Panel Applet");
+                pcNamespace.SetValue(RegistryGUID, "Rectify11 Control Panel Applet");
+            }
+        }
+        private static void DeleteShellExtCache()
+        {
+            using (RegistryKey clsid = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Cached", true))
+            {
+                try
+                {
+                    clsid.DeleteValue("{0a852434-9b22-36d7-9985-478ccf000690}");
+                }
+                catch { }
             }
         }
     }
