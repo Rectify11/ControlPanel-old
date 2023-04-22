@@ -28,9 +28,6 @@ namespace Rectify11
         private IShellBrowser? shellBrowser;
         private ShellNamespacePage customView = new ThemesPageUI();
 
-        public ThemesPage()
-        {
-        }
         #region IPersistFolder2 implementation
         public int GetClassID(out Guid pClassID)
         {

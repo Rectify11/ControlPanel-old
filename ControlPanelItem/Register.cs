@@ -18,7 +18,6 @@ namespace Rectify11
         {
             using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
             {
-
                 //delete the CLSID
                 try
                 {
