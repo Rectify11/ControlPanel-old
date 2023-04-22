@@ -37,7 +37,7 @@ namespace Register
                 Console.WriteLine(ex.ToString());
             }
 
-            Console.WriteLine("press the any key to continue...");
+            Console.WriteLine("Please make sure that you restart explorer. press the any key to continue...");
             Console.ReadKey();
         }
     }
