@@ -9,7 +9,7 @@ namespace Register
             try
             {
 
-                Console.WriteLine("Rectify11 control panel extension");
+                Console.WriteLine("Rectify11 control panel extension with argument length of "+args.Length);
                 if (args.Length > 0)
                 {
                     if (args[0].ToLower() == "register")
