@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Rectify11.COM
+{
+    /// <summary>
+    /// Exposes methods that obtain information from Shell folder objects.
+    /// </summary>
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("CEF04FDF-FE72-11D2-87A5-00C04F6837CF")]
+    public interface IPersistFolder3 : IPersistFolder2
+    {
+        #region Overrides for C#/COM compatibility.
+
+        /// <summary>
+        /// Retrieves the class identifier (CLSID) of the object.
+        /// </summary>
+        /// <param name="pClassID">A pointer to the location that receives the CLSID on return.
+        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object class that defines the code that can manipulate the object's data.</param>
+        /// <returns>
+        /// If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.
+        /// </returns>
+        [PreserveSig]
+        new int GetClassID(out Guid pClassID);
+
+        /// <summary>
+        /// Instructs a Shell folder object to initialize itself based on the information passed.
+        /// </summary>
+        /// <param name="pidl">The address of the ITEMIDLIST (item identifier list) structure that specifies the absolute location of the folder.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        [PreserveSig]
+        new int Initialize(IntPtr pidl);
+
+        /// <summary>
+        /// Gets the ITEMIDLIST for the folder object.
+        /// </summary>
+        /// <param name="ppidl">The address of an ITEMIDLIST pointer. This PIDL represents the absolute location of the folder and must be relative to the desktop. This is typically a copy of the PIDL passed to Initialize.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        /// <remarks>If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.</remarks>
+        [PreserveSig]
+        new int GetCurFolder(out IntPtr ppidl);
+        #endregion
+
+    }
+}

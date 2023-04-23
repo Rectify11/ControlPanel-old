@@ -10,7 +10,7 @@ namespace Rectify11
 {
     public class ShellNamespacePage : UserControl
     {
-        public IShellBrowser Browser;
+        public IShellBrowser? Browser;
         public virtual void Display() { }
     }
 }

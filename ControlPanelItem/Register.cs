@@ -16,6 +16,11 @@ namespace Rectify11
 
         public static void DoUnregister()
         {
+            var type = typeof(ThemesPage);
+            var className = type.FullName;
+            if (className == null)
+                throw new Exception("typeof(ThemesPage).FullName cannot be null");
+
             using (RegistryKey clsid = Registry.ClassesRoot.CreateSubKey("CLSID", true))
             {
                 //delete the CLSID
@@ -28,6 +33,9 @@ namespace Rectify11
 
                 }
             }
+
+            //delete progid
+            try { Registry.ClassesRoot.DeleteSubKey(className); } catch { }
 
             using (RegistryKey pcNamespace = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ControlPanel\\NameSpace\\", true))
             {
@@ -42,6 +50,8 @@ namespace Rectify11
             {
                 try { pcNamespace.DeleteValue(RegistryGUID); } catch { }
             }
+
+
             DeleteShellExtCache();
 
 
@@ -52,6 +62,8 @@ namespace Rectify11
             //shell:::{0a852434-9b22-36d7-9985-478ccf000690}
             var type = typeof(ThemesPage);
             var className = type.FullName;
+            if (className == null)
+                throw new Exception("typeof(ThemesPage).FullName cannot be null");
 
             //What we need to create:
             //HKEY_CLASSES_ROOT
@@ -75,10 +87,14 @@ namespace Rectify11
 
                     root.SetValue("System.ControlPanel.Category", "5", RegistryValueKind.String);
                     root.SetValue("System.ControlPanel.EnableInSafeMode", 5, RegistryValueKind.DWord);
-
+                    //
                     using (RegistryKey progid = root.CreateSubKey("ProgId", true))
                     {
                         progid.SetValue(null, className);
+                    }
+                    using (RegistryKey categories = root.CreateSubKey("Implemented Categories", true))
+                    {
+                        categories.CreateSubKey("{00021490-0000-0000-C000-000000000046}").Close();
                     }
                     using (RegistryKey inprocserver = root.CreateSubKey("InprocServer32", true))
                     {

@@ -35,6 +35,7 @@
   <PropertyGroup>
     <PlatformTarget>x64</PlatformTarget>
     <Description>Rectify11 Control Panel intergration</Description>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

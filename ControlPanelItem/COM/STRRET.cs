@@ -34,7 +34,7 @@ namespace Rectify11.COM
         /// <exception cref="System.NotImplementedException">
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
-        public string GetStringValue()
+        public string? GetStringValue()
         {
             switch (uType)
             {
