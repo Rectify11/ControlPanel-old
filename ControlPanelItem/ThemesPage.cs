@@ -19,7 +19,7 @@ namespace Rectify11
     [ComVisible(true)]
     [Guid(RegisterUtil.GUID)]
 
-    public class ThemesPage : IShellFolder2, IPersistFolder2, IExplorerPaneVisibility, IShellView, COM.IServiceProvider, IFolderView
+    public class ThemesPage : IShellFolder2, IPersistFolder2, IExplorerPaneVisibility, IShellView, COM.IServiceProvider, IFolderView, IObjectWithSite
     {
         /// <summary>
         /// The absolute ID list of the folder. This is provided by IPersistFolder.
@@ -27,6 +27,7 @@ namespace Rectify11
         private IdList? idListAbsolute;
         private IShellBrowser? shellBrowser;
         private ShellNamespacePage customView = new ThemesPageUI();
+        private object? site;
 
         #region IPersistFolder2 implementation
         public int GetClassID(out Guid pClassID)
@@ -437,6 +438,22 @@ namespace Rectify11
             peps = ExplorerPaneState.DefaultOff | ExplorerPaneState.Force;
             Logger.Log("GetPaneState() exit");
             return WinError.S_OK;
+        }
+
+     
+        public int SetSite([MarshalAs(UnmanagedType.IUnknown)] object pUnkSite)
+        {
+            Logger.Log("!!!!SetSite NOT IMPLEMENTED!!!!");
+            site = pUnkSite;
+            return 0;
+        }
+
+        public int GetSite(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppvSite)
+        {
+            Logger.Log("!!!!GetSite NOT IMPLEMENTED!!!!");
+            ppvSite = site;
+          
+            return 0;
         }
         #endregion
     }
